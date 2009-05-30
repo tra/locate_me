@@ -54,7 +54,7 @@ More information:
     http://labs.mozilla.com/2008/10/introducing-geode/    
     
 Author:
-    Roland Moriz, rmoriz@gmail.com
+    Roland Moriz, roland at moriz. de
 
 Copyright:
     (C) 2009 Moriz GmbH - http://www.moriz.de/
