@@ -1,10 +1,11 @@
+/**
+* A hack inspired by protolicious to retrieve and execute
+* the JavaScript functions that MaxMind's API delivers.
+* A kind of JSONP/ScriptP which unfortunately clutters the root namespace...
+*
+*/
 (function(){
-  // ---------------------------------------------------
-  // JSONP Add-On for prototype based on "protolicious"
-  // ---------------------------------------------------
-  // protolicious is licensed under the terms of the MIT license
-  //
-  // source: http://github.com/kangax/protolicious/blob/master/get_json.js
+  // inspired by protolicious, http://github.com/kangax/protolicious/blob/master/get_json.js
   var id = 0, head = $$('head')[0], global = this;
   global.getMaxMindFunctions = function(url, callback) {
     var script = document.createElement('script'), token = '__jsonp' + id;
@@ -19,6 +20,19 @@
   }
 })();
 
+
+/**
+* A hack when no console.log() is available (e.g. no Firebug)
+*
+*/
+try { console.log('init console... done'); } catch(e) { console = { log: function() {} } }
+
+
+/**
+* MorizGmbH_LocateMe_Result wraps the results provided
+* by each geolocation service into a structured format-
+*
+*/
 var MorizGmbH_LocateMe_Result = Class.create({
   initialize: function(provider) {
     this.provider  = provider;
@@ -29,10 +43,12 @@ var MorizGmbH_LocateMe_Result = Class.create({
   }
 });
 
-// console.log mock when not available
-try { console.log('init console... done'); } catch(e) { console = { log: function() {} } }
 
-// Provider Base
+/**
+* MorizGmbH_LocateMe_ProviderBase is a base class
+* inherited by each geolocation service class.
+*
+*/
 var MorizGmbH_LocateMe_ProviderBase = Class.create({
   initialize: function(options) {
     console.log("initialize called")
@@ -58,7 +74,12 @@ var MorizGmbH_LocateMe_ProviderBase = Class.create({
   }
 });
 
-// Loki.com 
+
+/**
+* MorizGmbH_LocateMe_ProviderLoki 
+* Implements Loki.com 
+*
+*/
 var MorizGmbH_LocateMe_ProviderLoki = Class.create(MorizGmbH_LocateMe_ProviderBase, {
   
   set_defaults: function() {
@@ -108,8 +129,12 @@ var MorizGmbH_LocateMe_ProviderLoki = Class.create(MorizGmbH_LocateMe_ProviderBa
   }
 });
 
-// - Google Gears
-// - Google Chrome 
+
+/**
+* MorizGmbH_LocateMe_ProviderGears 
+* Implements Google Gears/Google Chrome
+*
+*/
 var MorizGmbH_LocateMe_ProviderGears = Class.create(MorizGmbH_LocateMe_ProviderBase, {
   set_defaults: function(options) {
     this.name = "Gears";
@@ -150,10 +175,17 @@ var MorizGmbH_LocateMe_ProviderGears = Class.create(MorizGmbH_LocateMe_ProviderB
   }
 });
 
-// - W3C Draft
-// - Mozilla Geode (3.0.x, 3.5.x)
-// - Apple Mobile Safari 3.0 Beta (iPhone)
-// - Opera 10 Beta (w Geo/Windows) 
+
+/**
+* MorizGmbH_LocateMe_ProviderW3C 
+*
+* Implements:
+*   - W3C Draft
+*   - Mozilla Geode (3.0.x, 3.5.x)
+*   - Apple Mobile Safari 3.0 Beta (iPhone/iPod touch)
+*   - Opera 10 alpha (Geo-enabled build, only Windows)
+*
+*/
 var MorizGmbH_LocateMe_ProviderW3C = Class.create(MorizGmbH_LocateMe_ProviderBase, {
   set_defaults: function(options) {
     this.name = "W3C";
@@ -200,14 +232,16 @@ var MorizGmbH_LocateMe_ProviderW3C = Class.create(MorizGmbH_LocateMe_ProviderBas
 });
 
 
-/* - MaxMind.com Webservice
-=> http://www.kevinleary.net/smart-forms-geoip-location/
-=> http://www.maxmind.com/app/javascript_city
-
-REQUIRES JSONP ADD-ON protolicious for Prototype: 
-=> http://github.com/kangax/protolicious/blob/master/get_json.js
+/**
+* MorizGmbH_LocateMe_ProviderMaxMind 
+*
+* Implements MaxMind.com JavaScript Webservice for an IP based
+* less accurate geolocation.
+*
+* see:
+*   - http://www.kevinleary.net/smart-forms-geoip-location/
+*   - http://www.maxmind.com/app/javascript_city
 */
-
 var MorizGmbH_LocateMe_ProviderMaxMind = Class.create(MorizGmbH_LocateMe_ProviderBase, {
   set_defaults: function(options) {
     this.name = "MaxMind";
@@ -250,7 +284,12 @@ var MorizGmbH_LocateMe_ProviderMaxMind = Class.create(MorizGmbH_LocateMe_Provide
 });
 
 
-
+/**
+* MorizGmbH_LocateMe_Klass 
+*
+* The main class that handles the providers
+*
+*/
 var MorizGmbH_LocateMe_Klass = Class.create({
   initialize: function(user_options) {
 
@@ -346,7 +385,10 @@ var MorizGmbH_LocateMe_Klass = Class.create({
 
 var MorizGmbH_LocateMe = new MorizGmbH_LocateMe_Klass();
 
-/* Example
+/* 
+
+Example:
+========
 
 var LocateMe_callback = function(result) {
   alert("got result! provider: " + result.provider + ", lat: " + result.latitude + ", lng: " + result.longitude);
@@ -354,7 +396,7 @@ var LocateMe_callback = function(result) {
 var options = { 'loki_key' : 'localhost' };
 MorizGmbH_LocateMe.set_options(options);
 
-//MorizGmbH_LocateMe.selected_providers = ['MaxMind'];
+MorizGmbH_LocateMe.selected_providers = ['Loki', 'MaxMind'];
 MorizGmbH_LocateMe.locate(LocateMe_callback);
 
 */

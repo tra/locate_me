@@ -40,19 +40,20 @@ SugarTest()
       this.assertEqual(4, MorizGmbH_LocateMe.provider_shortcuts.size());
     })
     .it('should map provider shortcut W3C correctly', function() {
-       this.assertEqual('MorizGmbH_LocateMe_ProviderW3C', MorizGmbH_LocateMe.provider_shortcuts.get('W3C'));
+      this.assertEqual('MorizGmbH_LocateMe_ProviderW3C', MorizGmbH_LocateMe.provider_shortcuts.get('W3C'));
     })
     .it('should map provider shortcut Gears correctly', function() {
-       this.assertEqual('MorizGmbH_LocateMe_ProviderGears', MorizGmbH_LocateMe.provider_shortcuts.get('Gears'));
+      this.assertEqual('MorizGmbH_LocateMe_ProviderGears', MorizGmbH_LocateMe.provider_shortcuts.get('Gears'));
     })
     .it('should map provider shortcut Loki correctly', function() {
-       this.assertEqual('MorizGmbH_LocateMe_ProviderLoki', MorizGmbH_LocateMe.provider_shortcuts.get('Loki'));
+      this.assertEqual('MorizGmbH_LocateMe_ProviderLoki', MorizGmbH_LocateMe.provider_shortcuts.get('Loki'));
     })
     .it('should map provider shortcut MaxMind correctly', function() {
-       this.assertEqual('MorizGmbH_LocateMe_ProviderMaxMind', MorizGmbH_LocateMe.provider_shortcuts.get('MaxMind'));
+      this.assertEqual('MorizGmbH_LocateMe_ProviderMaxMind', MorizGmbH_LocateMe.provider_shortcuts.get('MaxMind'));
     })
     .it('should not activate Loki without an API key set', function() {
-       this.assertEqual('MorizGmbH_LocateMe_ProviderMaxMind', MorizGmbH_LocateMe.provider_shortcuts.get('MaxMind'));
+      MorizGmbH_LocateMe.check_available_geolocation_methods();
+      //this.assertEqual('MorizGmbH_LocateMe_ProviderMaxMind', MorizGmbH_LocateMe.provider_shortcuts.get('MaxMind'));
     })      
    .end()
 .run();
