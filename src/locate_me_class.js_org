@@ -1,0 +1,238 @@
+  
+function CMorizLocateMe(options){
+  
+  var defaults = {  
+                    'loki_key': false,
+                 };
+
+  this.options = mergeOptions(defaults, options);
+  
+  // sorting = priority!
+  this.selected_methods  = ['gears', 'loki', 'w3c', 'hostip', 'maxmind'];
+  this.available_methods = [];
+  
+  this.result = { 'method' : false, 
+                  'lat'    : false, 
+                  'lng'    : false, 
+                  'time'   : false };
+  
+  this.success = false;
+  this.abort   = false;
+  
+  this.locate = function() {
+    this.check_available_geolocation_methods();
+    this.get_location();
+  };
+  
+  this.provider = {};
+
+  // - determine available methods
+  this.check_available_geolocation_methods = function() {
+    for each (var method in this.selected_methods) {
+      switch (method) {
+        case 'gears': 
+          this.available_methods[method] = this.can_gears();
+          break;
+        case 'loki': 
+          this.available_methods[method] = this.can_loki();
+          break;
+        case 'w3c': 
+          this.available_methods[method] = this.can_w3c();
+          break;  
+        case 'hostip': 
+          this.available_methods[method] = this.can_hostip();
+          break;      
+        case 'maxmind': 
+          this.available_methods[method] = this.can_maxmind();
+          break;      
+      };
+    };
+  };  
+  
+  // Google Gears (Chrome & plugins for various platforms)
+  this.can_gears = function() { 
+    console.log('can_gears() called');
+    var result = false;
+    
+    if (window.google && google.gears) {
+      result = true;
+    }
+    
+    return result;
+  };
+  
+  this.do_gears = function() {
+    //this.result = { 'method': false, 'lat': false, 'lng': false, 'time', false };
+    var geo = google.gears.factory.create('beta.geolocation');
+    geo.getCurrentPosition(this.process_gears, this.abort_gears);
+  };
+  
+  this.process_gears = function() {
+    alert("back from gears");
+  };
+  
+  this.abort_gears = function() {
+    alert("back from gears");    
+  };
+  
+  
+  // loki.com plugin by Skyhook Wireless for various platforms
+  this.can_loki = function() {
+    console.log('can_loki() called');
+    var result = false;
+
+    if ((typeof LokiAPI != 'undefined') && LokiAPI.isInstalled() && this.options['loki_key'] != false) {
+      result = true;
+    }
+    
+    return result;
+  };
+
+  this.do_loki = function() {
+    this.success = false;
+  }
+  
+  // Geolocation API Specification
+  // http://dev.w3.org/geo/api/spec-source.html
+  //
+  // Firefox 3.x & Geode Plugin
+  // Firefox 3.5 & Geode HUD Plugin
+  // iPhone OS 3.0 (beta)
+  //
+  this.can_w3c = function() { 
+    var result = false;
+    
+    if (typeof navigator.geolocation != 'undefined') {
+      result = true;
+    }
+    
+    return result;
+  };
+  
+  // IP lookup against hostip.info
+  // => http://api.hostip.info/get_html.php?ip=85.181.90.143&position=true  
+  this.can_hostip = function() {
+    var result = false;
+    return result;
+  };
+  
+  // IP lookup by MaxMind ajax
+  // => http://www.kevinleary.net/smart-forms-geoip-location/
+  // => http://www.maxmind.com/app/javascript_city
+  this.can_maxmind = function() {
+    var result = false;
+    return result;
+  };
+
+
+  
+  // - trigger location request
+  this.get_location = function() {
+    for (var method in this.available_methods) {
+      if (this.success != false) { break; }
+      if (this.abort   == true)  { break; }
+      if (this.available_methods[method] == false) { continue; }
+      
+      switch (method) {
+        case 'gears':
+          this.do_gears();
+          break;
+        case 'loki':
+          this.do_gears();
+          break;
+      };
+    };
+  }
+  
+  // - send result to server
+  this.process_location = function() { 
+    false;
+  };
+
+  
+  function mergeOptions(def, custom) {
+    var result = def;
+
+    for (var key in custom) {
+      result[key] = custom[key];
+    }
+    
+    return result;  
+  };
+  
+};
+  
+var options = { 'loki_key' : 'http://localhost' };
+var LocateMe = new CMorizLocateMe(options);
+
+LocateMe.locate();
+console.dir(LocateMe.selected_methods);
+console.dir(LocateMe.available_methods);
+console.dir(LocateMe.options);
+
+
+// 
+// 
+// 
+// 
+// $.fn.doLocalization = function() {
+//   if (window.localize != true) { return; }
+//   
+//   //console.log('geolocalization enabled!');
+//   
+//   if (navigator && navigator.geolocation) {
+//     $('#localization_method').append('HTML 5.0/W3C Geo API');
+//     $(this).localizeWithHTML();
+//   } else if (window.google && google.gears) {
+//     $('#localization_method').append('Google Gears');
+//     $(this).localizeWithGears();
+//   } else if (LokiAPI && LokiAPI.isInstalled()) {
+//       $('#localization_method').append('Loki (Skyhookwireless)');
+//       $(this).localizeWithLoki();
+//   } else {
+//     $('#localization_method').html('Eine automatische Standortkennung war leider nicht möglich.')
+//     $('#geohelper').show();
+//     $('#manual_choice').show();
+//     $(this).externalLinksAreExternal();
+//     $('#url').focus();
+//     $('#manual_form').submit(function() { window.location.href = '/' + $('#url').val(); return false;} )
+//     $('#submit').click(function() { window.location.href = '/' + $('#url').val();  return false;} )
+//   }
+//   
+// }
+// 
+// $.fn.getLocationName = function(lat, lng, type) {
+//   $.post("/geo", { lat: lat, lng: lng, type: type }, function(data) {
+//     if (data && data.city) {
+//       window.location.href = '/' + data.city;
+//     }
+//   }, 'json');
+// }
+// 
+// $.fn.localizeWithGears = function() {
+//   var geo = google.gears.factory.create('beta.geolocation');
+//   geo.getCurrentPosition(GearsUpdatePosition);
+// }
+// 
+// function GearsUpdatePosition(position) {
+//   $(this).getLocationName(position.latitude, position.longitude, 'Google Gears');
+// }
+// 
+// $.fn.localizeWithLoki = function() {
+//   var loki = LokiAPI();
+//   loki.onSuccess = function(location) { $.fn.getLocationName(location.latitude, location.longitude, 'Loki'); }
+//   loki.onFailure = function(error) {};
+//   loki.setKey('wetter.moriz.de/');
+//   loki.requestLocation(true, loki.NO_STREET_ADDRESS_LOOKUP);
+// }
+// 
+// $.fn.localizeWithHTML = function() {
+//   navigator.geolocation.getCurrentPosition(function(position) {  
+//     if (position.coords != undefined) {
+//       $(this).getLocationName(position.coords.latitude, position.coords.longitude, 'HTML5 Geolocation API');
+//     } else {
+//       $(this).getLocationName(position.latitude, position.longitude, 'HTML5 Geolocation API');
+//     }
+//   });
+// }
+// 
