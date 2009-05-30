@@ -1,11 +1,12 @@
 /*  Locate Me, version 0.0.1
- *  (c) 2009 Roland Moriz
  *
- *  Locate Me is freely distributable under
- *  the terms of an MIT-style license.
- *  For details, see the web site: http://NOTE-ENTER-URL.com
+ *  Copyright (c) 2009 Moriz GmbH, München/Germany
  *
- *--------------------------------------------------------------------------*/
+ *  Locate Me is freely distributable under the terms of an MIT-style license.
+ *  For details, see the web site: http://github.com/rmoriz/locate_me/
+ *
+ *  requires Prototype framework: http://www.prototypejs.org/
+ *------------------------------------------------------------------------------*/
 
 var LocateMe = {
   Version: '0.0.1',
