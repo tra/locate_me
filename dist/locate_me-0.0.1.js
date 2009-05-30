@@ -1,3 +1,16 @@
+/*  Locate Me, version 0.0.1
+ *  (c) 2009 Roland Moriz
+ *
+ *  Locate Me is freely distributable under
+ *  the terms of an MIT-style license.
+ *  For details, see the web site: http://NOTE-ENTER-URL.com
+ *
+ *--------------------------------------------------------------------------*/
+
+var LocateMe = {
+  Version: '0.0.1',
+};
+
 (function(){
   // ---------------------------------------------------
   // JSONP Add-On for prototype based on "protolicious"
@@ -58,9 +71,9 @@ var MorizGmbH_LocateMe_ProviderBase = Class.create({
   }
 });
 
-// Loki.com 
+// Loki.com
 var MorizGmbH_LocateMe_ProviderLoki = Class.create(MorizGmbH_LocateMe_ProviderBase, {
-  
+
   set_defaults: function() {
     this.name = "Loki";
   },
@@ -109,7 +122,7 @@ var MorizGmbH_LocateMe_ProviderLoki = Class.create(MorizGmbH_LocateMe_ProviderBa
 });
 
 // - Google Gears
-// - Google Chrome 
+// - Google Chrome
 var MorizGmbH_LocateMe_ProviderGears = Class.create(MorizGmbH_LocateMe_ProviderBase, {
   set_defaults: function(options) {
     this.name = "Gears";
@@ -153,7 +166,7 @@ var MorizGmbH_LocateMe_ProviderGears = Class.create(MorizGmbH_LocateMe_ProviderB
 // - W3C Draft
 // - Mozilla Geode (3.0.x, 3.5.x)
 // - Apple Mobile Safari 3.0 Beta (iPhone)
-// - Opera 10 Beta (w Geo/Windows) 
+// - Opera 10 Beta (w Geo/Windows)
 var MorizGmbH_LocateMe_ProviderW3C = Class.create(MorizGmbH_LocateMe_ProviderBase, {
   set_defaults: function(options) {
     this.name = "W3C";
@@ -204,7 +217,7 @@ var MorizGmbH_LocateMe_ProviderW3C = Class.create(MorizGmbH_LocateMe_ProviderBas
 => http://www.kevinleary.net/smart-forms-geoip-location/
 => http://www.maxmind.com/app/javascript_city
 
-REQUIRES JSONP ADD-ON protolicious for Prototype: 
+REQUIRES JSONP ADD-ON protolicious for Prototype:
 => http://github.com/kangax/protolicious/blob/master/get_json.js
 */
 
@@ -271,7 +284,7 @@ var MorizGmbH_LocateMe_Klass = Class.create({
     // sorting = priority!
     this.selected_providers = [ 'W3C', 'Gears', 'Loki', 'MaxMind' ];
     this.available_methods  = new Hash();
-    
+
     this.results = new Array();
     this.errors     = 0;
     this.successes  = 0;
@@ -285,13 +298,13 @@ var MorizGmbH_LocateMe_Klass = Class.create({
       result[key] = custom[key];
     }
 
-    return result;  
+    return result;
   },
 
   set_callback: function(callback) {
     this.callback = callback;
   },
-  
+
   set_options: function(user_options) {
     this.options = this.mergeOptions(this.options, user_options);
   },
@@ -309,7 +322,7 @@ var MorizGmbH_LocateMe_Klass = Class.create({
   },
 
   check_available_geolocation_methods: function() {
-    var self = this; 
+    var self = this;
 
     this.selected_providers.each(function(provider_shortcut) {
       console.log("provider_shortcut: " + provider_shortcut);
@@ -318,7 +331,7 @@ var MorizGmbH_LocateMe_Klass = Class.create({
       if (provider.available(self.options)) {
         console.log("Available: " + provider_shortcut);
         self.available_methods.set(provider_shortcut, provider);
-      } 
+      }
 
     });
   },
@@ -328,9 +341,9 @@ var MorizGmbH_LocateMe_Klass = Class.create({
       var provider_key = provider[0];
       var provider     = provider[1];
 
-      if (self.user_abort == true) { 
+      if (self.user_abort == true) {
         console.log("user abort")
-        return; 
+        return;
       }
 
       try {
@@ -338,7 +351,7 @@ var MorizGmbH_LocateMe_Klass = Class.create({
       } catch(e) {
         console.log(e);
       }
-    });  
+    });
   },
 
 });
