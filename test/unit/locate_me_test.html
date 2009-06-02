@@ -37,7 +37,7 @@ SugarTest()
     .before(function() {
     })
     .it('should have all provider shortcuts', function() {
-      this.assertEqual(4, MorizGmbH_LocateMe.provider_shortcuts.size());
+      this.assertEqual(5, MorizGmbH_LocateMe.provider_shortcuts.size());
     })
     .it('should map provider shortcut W3C correctly', function() {
       this.assertEqual('MorizGmbH_LocateMe_ProviderW3C', MorizGmbH_LocateMe.provider_shortcuts.get('W3C'));
@@ -50,6 +50,9 @@ SugarTest()
     })
     .it('should map provider shortcut MaxMind correctly', function() {
       this.assertEqual('MorizGmbH_LocateMe_ProviderMaxMind', MorizGmbH_LocateMe.provider_shortcuts.get('MaxMind'));
+    })
+    .it('should map provider shortcut IPLocationTools correctly', function() {
+      this.assertEqual('MorizGmbH_LocateMe_ProviderIPLocationTools', MorizGmbH_LocateMe.provider_shortcuts.get('IPLocationTools'));
     })
     .it('should not activate Loki without an API key set', function() {
       MorizGmbH_LocateMe.check_available_geolocation_methods();

@@ -3,13 +3,14 @@ Locate Me - Locate your users by using state of the art geolocation services.
 Description:
     This JavaScript project allows you to geolocate the current user by using
     the upcoming W3C Geolocation API, Google Gears, Mozilla Geode, Skyhook 
-    Wireless' Loki and finally MaxMind's IP-based geolocation webservice.
+    Wireless' Loki.com and finally IPLocationTools.com and MaxMind's 
+    IP-based geolocation webservice.
     
     The modular structure allows to write your own geo-provider class very
     easily - e.g. if you want to talk to some other JSON or xml based webservice.
 
 Supported Methods and default order:
-    'W3C', 'Gears', 'Loki', 'MaxMind'
+    'W3C', 'Gears', 'Loki', 'IPLocationTools', 'MaxMind'
 
 Requirements:
     - Prototype 1.6.0.3 (other versions not tested)
