@@ -21,6 +21,7 @@ var LocateMe = {
 (function(){
   // inspired by protolicious, http://github.com/kangax/protolicious/blob/master/get_json.js
   var id = 0, head = $$('head')[0], global = this;
+
   global.getMaxMindFunctions = function(url, callback) {
     var script = document.createElement('script'), token = '__jsonp' + id;
     script.src = url;
@@ -31,7 +32,22 @@ var LocateMe = {
     };
     head.appendChild(script);
     id++;
+  };
+
+  // from: http://github.com/kangax/protolicious/blob/master/get_json.js
+  global.getJSONP = function(url, callback) {
+    var script = document.createElement('script'), token = '__jsonp' + id;
+    global[token] = callback;
+    script.src = url.replace(/\?(&|$)/, '__jsonp' + id + '$1');
+    script.onload = function() {
+      script.remove();
+      script = null;
+      delete global[token];
+    };
+    head.appendChild(script);
+    id++;
   }
+
 })();
 
 
@@ -297,6 +313,56 @@ var MorizGmbH_LocateMe_ProviderMaxMind = Class.create(MorizGmbH_LocateMe_Provide
   }
 });
 
+/**
+* MorizGmbH_LocateMe_ProviderIPLocationTools
+*
+* see:
+*   - http://iplocationtools.com/ip_location_api.php
+*   - http://jquery-howto.blogspot.com/2009/04/get-geographical-location-geolocation.html
+*/
+var MorizGmbH_LocateMe_ProviderIPLocationTools = Class.create(MorizGmbH_LocateMe_ProviderBase, {
+  set_defaults: function(options) {
+    this.name = "IPLocationTools";
+  },
+  available: function() {
+    var result = true;
+    return result;
+  },
+  locate: function() {
+    var self = this;
+    console.log("IPLocationTools::locate");
+    try {
+      var url = "http://iplocationtools.com/ip_query.php?output=json&callback=?";
+      getJSONP(url,
+        function(data){
+          self.handle_result(data);
+        }
+      );
+    } catch(e) {
+      this.handle_error(e);
+    }
+  },
+  handle_result: function(data) {
+    console.log("IPLocationTools::handle_result");
+
+    var result = new MorizGmbH_LocateMe_Result('IPLocationTools');
+    result.timestamp = (new Date).getTime();
+    result.success   = true;
+
+    result.latitude  = parseFloat(data.Latitude);
+    result.longitude = parseFloat(data.Longitude);
+
+    MorizGmbH_LocateMe.add_result(result);
+  },
+  handle_error: function(error) {
+    console.log("MaxMind::handle_error");
+    console.log(error);
+    MorizGmbH_LocateMe.errors++;
+  }
+});
+
+
+
 
 /**
 * MorizGmbH_LocateMe_Klass
@@ -316,13 +382,14 @@ var MorizGmbH_LocateMe_Klass = Class.create({
 
     // convenient shortcuts
     this.provider_shortcuts = new Hash();
-    this.provider_shortcuts.set('W3C',     'MorizGmbH_LocateMe_ProviderW3C');
-    this.provider_shortcuts.set('Gears',   'MorizGmbH_LocateMe_ProviderGears');
-    this.provider_shortcuts.set('Loki',    'MorizGmbH_LocateMe_ProviderLoki');
-    this.provider_shortcuts.set('MaxMind', 'MorizGmbH_LocateMe_ProviderMaxMind');
+    this.provider_shortcuts.set('W3C',             'MorizGmbH_LocateMe_ProviderW3C');
+    this.provider_shortcuts.set('Gears',           'MorizGmbH_LocateMe_ProviderGears');
+    this.provider_shortcuts.set('Loki',            'MorizGmbH_LocateMe_ProviderLoki');
+    this.provider_shortcuts.set('MaxMind',         'MorizGmbH_LocateMe_ProviderMaxMind');
+    this.provider_shortcuts.set('IPLocationTools', 'MorizGmbH_LocateMe_ProviderIPLocationTools');
 
     // sorting = priority!
-    this.selected_providers = [ 'W3C', 'Gears', 'Loki', 'MaxMind' ];
+    this.selected_providers = [ 'W3C', 'Gears', 'Loki', 'IPLocationTools', 'MaxMind' ];
     this.available_methods  = new Hash();
 
     this.results = new Array();
@@ -363,6 +430,9 @@ var MorizGmbH_LocateMe_Klass = Class.create({
 
   check_available_geolocation_methods: function() {
     var self = this;
+
+    // reset
+    this.available_methods = new Hash();
 
     this.selected_providers.each(function(provider_shortcut) {
       console.log("provider_shortcut: " + provider_shortcut);
