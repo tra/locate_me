@@ -361,7 +361,7 @@ var MorizGmbH_LocateMe_Klass = Class.create({
 
     this.defaults = {
       'loki_key': false,
-      'gears_options': {},
+      'gears_options': {}
     };
 
     this.options = this.mergeOptions(this.defaults, user_options);
@@ -448,7 +448,7 @@ var MorizGmbH_LocateMe_Klass = Class.create({
         console.log(e);
       }
     });  
-  },
+  }
 
 });
 
